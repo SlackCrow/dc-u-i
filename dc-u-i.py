@@ -73,6 +73,7 @@ def printCurrent():
     print("Page "+str(currentPage+1))
 
 def printThread():
+    global currentPost
     processedFetch = json.loads(getThread())
     print("----------------------------------")
     print("Title:" + processedFetch["meta"][0]["title"])
@@ -88,12 +89,10 @@ def printThread():
         clear()
         printBoard()
     elif toDo[0] == "n":
-        global currentPost
         currentPost = currentPost + 1
         clear()
         printThread()
     elif toDo[0] == "b":
-        global currentPost
         if currentPost == 0:
             print("There is no previous page")
         else:
@@ -106,6 +105,8 @@ def printThread():
         print("error")
 
 def printBoard():
+    global currentThread
+    global currentPage
     threadList = json.loads(getBoard())
     printCurrent()
     i = 9*currentPage
@@ -118,23 +119,19 @@ def printBoard():
     toDo = input()
     if toDo[0] == "g":
         clear()
-        global currentThread
         currentThread = threadList[u'threads'][int(toDo[2:])][u'id']
         printThread()
     elif toDo[0] == "t":
         main()
     elif toDo[0] == "n":
-        global currentPage
         currentPage = currentPage + 1
         clear()
         printBoard()
     elif toDo[0] == "n":
-        global currentPage
         currentPage = currentPage + 1
         clear()
         printBoard()
     elif toDo[0] == "b":
-        global currentPage
         if currentPage == 0:
             print("There is no previous page")
         else:
