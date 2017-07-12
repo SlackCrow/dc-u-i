@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 #Licensed under the 2-Clause BSD License
-# 0.00001
+# 0.0000233333333333333 b
 #Slack Crow 2017
 
 import csv
@@ -8,6 +8,7 @@ import sys
 import os
 import requests
 import json
+import time
 
 currentBoard = ""
 currentPage = 0
@@ -37,7 +38,6 @@ def printTop():
     currentBoard = input()
     currentPage = 0
     clear()
-
 def getBoard():
     jsonReceived = requests.get("https://boards.dangeru.us/api.php?type=index&board=" + currentBoard + "&ln=" + "250")
     jsonReceived = jsonReceived.text.replace('\n', ' ').replace('\r', '')
@@ -100,9 +100,44 @@ def printThread():
         clear()
         printThread()
     elif toDo[0] == "w":
-        print("no api")
+        postComment()
     else:
         print("error")
+
+def postThread():
+    clear()
+    print("Title")
+    print("----------------------------------")
+    title = input()
+    clear()
+    print("Body")
+    print("\"#submit\" to submit")
+    print("----------------------------------")
+    userInput = input()
+    body = userInput
+    while (not(userInput == "#submit")):
+        userInput = input()
+        if not userInput == "#submit":
+            body = body + "/n" + userInput
+    body = body.replace(" ","%20")
+    title = title.replace(" ","%20")
+    requests.get("https://boards.dangeru.us/api.php?type=post&board=" + currentBoard + "&title=" + title + "&body=" + body)
+    clear()
+    printBoard()
+
+def postComment():
+    print("\"#submit\" to submit")
+    print("----------------------------------")
+    userInput = input()
+    body = userInput
+    while (not(userInput == "#submit")):
+        userInput = input()
+        if not userInput == "#submit":
+            body = body + "/n" + userInput
+    body = body.replace(" ","%20")
+    requests.get("https://boards.dangeru.us/api.php?type=comment&board=" + currentBoard + "&thread=" + str(currentThread) + "&body=" + body)
+    clear()
+    printThread()
 
 def printBoard():
     global currentThread
@@ -139,7 +174,7 @@ def printBoard():
         clear()
         printBoard()
     elif toDo[0] == "w":
-        print("not implemented yet")
+        postThread()
     else:
         print("error, returing to top")
         main()
